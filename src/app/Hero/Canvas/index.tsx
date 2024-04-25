@@ -5,7 +5,7 @@ import Cube from './Cube';
 
 const Canvas = () => {
   return (
-    <R3FCanvas>
+    <R3FCanvas camera={{ fov: 20, position: [12, 12, 12] }}>
       {/* <Environment preset="dawn" /> */}
       <Cube />
       <OrbitControls />

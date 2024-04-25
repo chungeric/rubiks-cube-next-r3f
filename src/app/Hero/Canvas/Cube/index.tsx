@@ -17,7 +17,7 @@ const Cube = () => {
           const cubie = new THREE.Group();
           cubie.scale.set(0.95, 0.95, 0.95);
           cubie.position.set(x, y, z);
-          const base = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+          const base = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x000000 }));
           cubie.add(base);
           addStickers(cubie, x, y, z);
           container?.add(cubie);
