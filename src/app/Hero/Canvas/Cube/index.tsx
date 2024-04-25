@@ -10,13 +10,10 @@ const Cube = () => {
   // Create the 3x3x3 cube
   useEffect(() => {
     const container = ref.current;
-    const colors = ['red', 'green', 'blue', 'orange', 'yellow', 'white'];
     for (let x = -1; x <= 1; x++) {
       for (let y = -1; y <= 1; y++) {
         for (let z = -1; z <= 1; z++) {
           if (x === 0 && y === 0 && z === 0) continue;
-          let color = 'white';
-          if (x === 1) color = colors[3];
           const cubie = new THREE.Group();
           cubie.scale.set(0.95, 0.95, 0.95);
           cubie.position.set(x, y, z);
