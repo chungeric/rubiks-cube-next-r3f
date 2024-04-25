@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls, RoundedBox } from '@react-three/drei';
+import { addStickers } from './helpers';
 import * as THREE from 'three';
 
 const Cube = () => {
@@ -16,13 +17,19 @@ const Cube = () => {
           if (x === 0 && y === 0 && z === 0) continue;
           let color = 'white';
           if (x === 1) color = colors[3];
-          const cubie = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color }));
+          const cubie = new THREE.Group();
           cubie.scale.set(0.95, 0.95, 0.95);
           cubie.position.set(x, y, z);
+          const base = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+          cubie.add(base);
+          addStickers(cubie, x, y, z);
           container?.add(cubie);
         }
       }
     }
+    return () => {
+      container?.clear();
+    };
   }, []);
 
   const [isAnimating, setIsAnimating] = useState(false);
@@ -40,17 +47,21 @@ const Cube = () => {
           cubies.forEach((cubie) => group.add(cubie));
           container.add(group);
           let angle = 0;
+          let angleTarget = -(Math.PI / 2);
           const animate = () => {
             setIsAnimating(true);
             angle -= 0.2;
             group.rotation.y = angle;
-            if (angle > -(Math.PI / 2)) {
+            if (angle > angleTarget) {
               requestAnimationFrame(animate);
             } else {
+              group.rotation.y = angleTarget;
               group.children.forEach((cubie, i) => {
                 const clone = cubie.clone();
                 const position = cubie.getWorldPosition(new THREE.Vector3());
+                const rotation = cubie.getWorldQuaternion(new THREE.Quaternion());
                 clone.position.set(Math.round(position.x), Math.round(position.y), Math.round(position.z));
+                clone.rotation.setFromQuaternion(rotation);
                 container.add(clone);
               });
               container.remove(group);
@@ -68,17 +79,21 @@ const Cube = () => {
           cubies.forEach((cubie) => group.add(cubie));
           container.add(group);
           let angle = 0;
+          let angleTarget = Math.PI / 2;
           const animate = () => {
             setIsAnimating(true);
             angle += 0.2;
             group.rotation.x = angle;
-            if (angle < Math.PI / 2) {
+            if (angle < angleTarget) {
               requestAnimationFrame(animate);
             } else {
+              group.rotation.x = angleTarget;
               group.children.forEach((cubie, i) => {
                 const clone = cubie.clone();
                 const position = cubie.getWorldPosition(new THREE.Vector3());
+                const rotation = cubie.getWorldQuaternion(new THREE.Quaternion());
                 clone.position.set(Math.round(position.x), Math.round(position.y), Math.round(position.z));
+                clone.rotation.setFromQuaternion(rotation);
                 container.add(clone);
               });
               container.remove(group);
