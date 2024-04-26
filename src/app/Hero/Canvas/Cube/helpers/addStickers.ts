@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export const addStickers = (cubie: any, x: number, y: number, z: number) => {
+const addStickers = (cubie: any, x: number, y: number, z: number) => {
   if (z === 1) {
     const sticker = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.9), new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, color: 'red' }));
     sticker.position.set(0, 0, 0.501);
@@ -36,3 +36,5 @@ export const addStickers = (cubie: any, x: number, y: number, z: number) => {
     cubie.add(sticker);
   }
 };
+
+export default addStickers;
