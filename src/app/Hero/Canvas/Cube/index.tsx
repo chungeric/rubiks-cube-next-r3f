@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import addStickers from './helpers/addStickers';
 import rotateLayer from './helpers/rotateLayer';
@@ -8,6 +8,7 @@ import { Layer } from './helpers/types';
 import useKeyPress from '@/hooks/useKeyPress';
 import getBreakPosition from './helpers/getBreakPosition';
 import { lerp } from 'three/src/math/MathUtils.js';
+import getMoveFromClick from './helpers/getMoveFromClick';
 
 const Cube = ({ breakCube }: { breakCube: boolean }) => {
   const ref = useRef<THREE.Group>(null);
@@ -15,6 +16,7 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
   const raycaster = useRef(new THREE.Raycaster());
   const keyPressed = useKeyPress();
   const [pointerEntered, setPointerEntered] = useState(false);
+  const { pointer, camera } = useThree();
 
   // Create the 3x3x3 cube
   useEffect(() => {
@@ -53,18 +55,52 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
     }
   }, [keyPressed]);
 
+  // Handle sticker click
+  useEffect(() => {
+    let clickedIntersect: THREE.Intersection | null = null;
+    const onMouseDown = (e: MouseEvent) => {
+      raycaster.current.setFromCamera(pointer, camera);
+      const intersects = raycaster.current.intersectObjects(ref.current?.children as THREE.Object3D[]);
+      if (intersects.length > 0) {
+        if (intersects[0].object.userData.name !== 'sticker') return;
+        clickedIntersect = intersects[0];
+      } else {
+        clickedIntersect = null;
+      }
+    };
+    const onMouseUp = (e: MouseEvent) => {
+      const container = ref.current;
+      raycaster.current.setFromCamera(pointer, camera);
+      const intersects = raycaster.current.intersectObjects(ref.current?.children as THREE.Object3D[]);
+      if (intersects.length > 0) {
+        if (intersects[0].object.userData.name !== 'sticker') return;
+        if (intersects[0].object.uuid !== clickedIntersect?.object.uuid) return;
+        let faceDirection = intersects[0].object.getWorldDirection(new THREE.Vector3());
+        faceDirection = faceDirection.round();
+        const move = getMoveFromClick(e.button, faceDirection);
+        if (move) {
+          rotateLayer({ move, cubeContainer: container });
+        }
+      } else {
+        clickedIntersect = null;
+      }
+    };
+    window.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mouseup', onMouseUp);
+    return () => {
+      window.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [pointer, camera]);
+
+  // Detect pointer hover
   useFrame(({ camera, pointer }) => {
     if (pointerEntered === false) return;
     raycaster.current.setFromCamera(pointer, camera);
     const intersects = raycaster.current.intersectObjects(ref.current?.children as THREE.Object3D[]);
     if (intersects.length > 0) {
-      const cubiesHovered = intersects.reduce((accumulator: THREE.Object3D[], current: THREE.Intersection) => {
-        if (current.object.parent && accumulator.indexOf(current.object.parent) === -1) {
-          accumulator.push(current.object.parent);
-        }
-        return accumulator;
-      }, []);
-      console.log('cubiesHovered', cubiesHovered);
+      const hoveredCubie = intersects[0]?.object.parent;
+      // console.log('hoveredCubie', hoveredCubie);
     }
   });
 
@@ -84,11 +120,23 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
         );
       })
     ) {
-      console.log('Solved!');
+      // console.log('Solved!');
     }
   });
 
   // Break cube
+  const cubeRotationTarget = useRef(0);
+  useEffect(() => {
+    if (!breakCube) {
+      const container = ref.current;
+      if (!container) return;
+      if (container.rotation.x > Math.PI) {
+        cubeRotationTarget.current = Math.PI * 2;
+      } else {
+        cubeRotationTarget.current = 0;
+      }
+    }
+  }, [breakCube]);
   useFrame(() => {
     const container = ref.current;
     if (!container) return;
@@ -113,9 +161,18 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
       if (Math.abs(cubie.position.z - cubie.userData[targetUserDataPosition].z) < 0.001)
         cubie.position.z = cubie.userData[targetUserDataPosition].z;
     });
+    if (breakCube) {
+      container.rotation.x += 0.01;
+      container.rotation.y += 0.01;
+      if (container.rotation.x > Math.PI * 2) container.rotation.x = 0;
+      if (container.rotation.y > Math.PI * 2) container.rotation.y = 0;
+    } else {
+      container.rotation.x = lerp(container.rotation.x, cubeRotationTarget.current, 0.1);
+      container.rotation.y = lerp(container.rotation.y, cubeRotationTarget.current, 0.1);
+    }
   });
 
-  return <group ref={ref} onPointerEnter={() => setPointerEntered(true)} />;
+  return <group ref={ref} userData={{ name: 'cube' }} onPointerEnter={() => setPointerEntered(true)} />;
 };
 
 export default Cube;

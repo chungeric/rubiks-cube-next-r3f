@@ -18,42 +18,51 @@ const addStickers = (cubie: THREE.Group, x: number, y: number, z: number) => {
   const shape = new THREE.Shape();
   createShape( shape, 0, 0, 0.9, 0.9, 0.1 );
   const stickerGeometry = new THREE.ShapeGeometry( shape );
-  const stickerMaterial = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+  const stickerMaterial = new THREE.MeshBasicMaterial();
+  const stickerMesh = new THREE.Mesh(stickerGeometry, stickerMaterial);
+  stickerMesh.userData.name = 'sticker';
   if (z === 1) {
-    const sticker = new THREE.Mesh(stickerGeometry, stickerMaterial.clone());
+    const sticker = stickerMesh.clone();
+    sticker.material = stickerMaterial.clone();
     sticker.material.color.set('red');
     sticker.position.set(0, 0, 0.502);
     cubie.add(sticker);
   }
   if (z === -1) {
-    const sticker = new THREE.Mesh(stickerGeometry, stickerMaterial.clone());
+    const sticker = stickerMesh.clone();
+    sticker.material = stickerMaterial.clone();
     sticker.material.color.set('orange');
     sticker.position.set(0, 0, -0.502);
+    sticker.rotation.x = Math.PI;
     cubie.add(sticker);
   }
   if (x === 1) {
-    const sticker = new THREE.Mesh(stickerGeometry, stickerMaterial.clone());
+    const sticker = stickerMesh.clone();
+    sticker.material = stickerMaterial.clone();
     sticker.material.color.set('blue');
     sticker.position.set(0.502, 0, 0);
     sticker.rotation.y = Math.PI / 2;
     cubie.add(sticker);
   }
   if (x === -1) {
-    const sticker = new THREE.Mesh(stickerGeometry, stickerMaterial.clone());
+    const sticker = stickerMesh.clone();
+    sticker.material = stickerMaterial.clone();
     sticker.material.color.set('green');
     sticker.position.set(-0.502, 0, 0);
-    sticker.rotation.y = Math.PI / 2;
+    sticker.rotation.y = Math.PI / 2 * 3;
     cubie.add(sticker);
   }
   if (y === 1) {
-    const sticker = new THREE.Mesh(stickerGeometry, stickerMaterial.clone());
+    const sticker = stickerMesh.clone();
+    sticker.material = stickerMaterial.clone();
     sticker.material.color.set('white');
     sticker.position.set(0, 0.502, 0);
-    sticker.rotation.x = Math.PI / 2;
+    sticker.rotation.x = Math.PI / 2 * 3;
     cubie.add(sticker);
   }
   if (y === -1) {
-    const sticker = new THREE.Mesh(stickerGeometry, stickerMaterial.clone());
+    const sticker = stickerMesh.clone();
+    sticker.material = stickerMaterial.clone();
     sticker.material.color.set('yellow');
     sticker.position.set(0, -0.502, 0);
     sticker.rotation.x = Math.PI / 2;

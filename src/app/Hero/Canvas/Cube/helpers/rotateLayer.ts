@@ -50,8 +50,8 @@ const getInverted = (move: Move) => {
   return move === move.toUpperCase();
 }
 
-const rotateLayer = (props: { move: Move; cubeContainer: THREE.Group | null; }) => {
-  const { move, cubeContainer } = props;
+const rotateLayer = (props: { move: Move; cubeContainer: THREE.Group | null; rotationSpeed?: number; }) => {
+  const { move, cubeContainer, rotationSpeed = 0.2 } = props;
   const inverted = getInverted(move);
   const layer = move.toLowerCase() as Layer;
   const axis = getAxis(layer);
@@ -74,7 +74,7 @@ const rotateLayer = (props: { move: Move; cubeContainer: THREE.Group | null; }) 
     let angleTarget = Math.PI / 2;
     let angleDirection = getAngleDirection(layer, inverted);
     const animate = () => {
-      angle += (0.2 * angleDirection);
+      angle += (rotationSpeed * angleDirection);
       group.rotation[axis] = angle;
       if (Math.abs(angle) < angleTarget) {
         requestAnimationFrame(animate);

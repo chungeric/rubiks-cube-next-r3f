@@ -5,10 +5,10 @@ import Cube from './Cube';
 
 const Canvas = ({ breakCube }: { breakCube: boolean; }) => {
   return (
-    <R3FCanvas camera={{ fov: 20, position: [12, 12, 12] }}>
+    <R3FCanvas camera={{ fov: 20, position: [15, 15, 15] }}>
       {/* <Environment preset="dawn" /> */}
       <Cube breakCube={breakCube} />
-      <OrbitControls />
+      <OrbitControls enablePan={false} minDistance={16} maxDistance={30} />
     </R3FCanvas>
   );
 };
