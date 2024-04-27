@@ -83,7 +83,7 @@ const rotateLayer = (props: { layer: Layer; inverted: boolean; cubeContainer: TH
           const newY = Math.round(position.y);
           const newZ = Math.round(position.z);
           clone.position.set(newX, newY, newZ);
-          clone.userData.originalPosition = { x: newX, y: newY, z: newZ };
+          clone.userData.currentPosition = { x: newX, y: newY, z: newZ };
           clone.userData.breakPosition = getBreakPosition(newX, newY, newZ);
           clone.rotation.setFromQuaternion(rotation);
           cubeContainer.add(clone);

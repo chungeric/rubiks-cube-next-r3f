@@ -13,7 +13,7 @@ import { lerp } from 'three/src/math/MathUtils.js';
 const Cube = ({ breakCube }: { breakCube: boolean; }) => {
   const ref = useRef<THREE.Group>(null);
   const isAnimating = useRef(false);
-  // const raycaster = useRef(new THREE.Raycaster());
+  const raycaster = useRef(new THREE.Raycaster());
   const keyPressed = useKeyPress();
   const [pointerEntered, setPointerEntered] = useState(false);
 
@@ -32,7 +32,8 @@ const Cube = ({ breakCube }: { breakCube: boolean; }) => {
           addStickers(cubie, x, y, z);
           cubie.scale.set(0.98, 0.98, 0.98);
           cubie.userData.name = `cubie`;
-          cubie.userData.originalPosition = { x, y, z };
+          cubie.userData.solvedPosition = { x, y, z };
+          cubie.userData.currentPosition = { x, y, z };
           cubie.userData.breakPosition = getBreakPosition(x, y, z);
           container?.add(cubie);
         }
@@ -53,26 +54,43 @@ const Cube = ({ breakCube }: { breakCube: boolean; }) => {
     }
   }, [keyPressed]);
 
-  // useFrame(({ camera, pointer }) => {
-  //   if (pointerEntered === false) return;
-  //   raycaster.current.setFromCamera(pointer, camera);
-  //   const intersects = raycaster.current.intersectObjects(ref.current?.children as THREE.Object3D[]);
-  //   if (intersects.length > 0) {
-  //     const cubiesHovered = intersects.reduce((accumulator: THREE.Object3D[], current: THREE.Intersection) => {
-  //       if (current.object.parent && accumulator.indexOf(current.object.parent) === -1) {
-  //         accumulator.push(current.object.parent);
-  //       }
-  //       return accumulator;
-  //     }, []);
-  //   }
-  // })
+  useFrame(({ camera, pointer }) => {
+    if (pointerEntered === false) return;
+    raycaster.current.setFromCamera(pointer, camera);
+    const intersects = raycaster.current.intersectObjects(ref.current?.children as THREE.Object3D[]);
+    if (intersects.length > 0) {
+      const cubiesHovered = intersects.reduce((accumulator: THREE.Object3D[], current: THREE.Intersection) => {
+        if (current.object.parent && accumulator.indexOf(current.object.parent) === -1) {
+          accumulator.push(current.object.parent);
+        }
+        return accumulator;
+      }, []);
+      console.log('cubiesHovered', cubiesHovered);
+    }
+  });
+
+  // Detect solve
+  useFrame(() => {
+    const container = ref.current;
+    if (!container) return;
+    const isAnimating = container.children.find(child => child.userData.name !== 'cubie');
+    if (isAnimating) return;
+    const cubies = container.children.filter((cubie) => cubie.userData.name === 'cubie');
+    if (cubies.every((cubie) => {
+      return cubie.position.x === cubie.userData.solvedPosition.x &&
+        cubie.position.y === cubie.userData.solvedPosition.y &&
+        cubie.position.z === cubie.userData.solvedPosition.z;
+    })) {
+      console.log('Solved!');
+    }
+  });
 
   // Break cube
   useFrame(() => {
     const container = ref.current;
     if (!container) return;
     const cubies = container.children.filter((cubie) => cubie.userData.name === 'cubie');
-    const targetUserDataPosition = breakCube ? 'breakPosition' : 'originalPosition';
+    const targetUserDataPosition = breakCube ? 'breakPosition' : 'currentPosition';
     const lerpAmount = breakCube ? 0.25 : 0.15;
     cubies?.forEach((cubie, i) => {
       if (
