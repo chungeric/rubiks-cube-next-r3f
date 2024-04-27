@@ -45,8 +45,8 @@ const getAngleDirection = (layer: Layer, inverted: boolean) => {
   }
 }
 
-const rotateLayer = (props: { layer: Layer; inverted: boolean; cubeContainer: THREE.Group<THREE.Object3DEventMap> | null; setIsAnimating: React.Dispatch<React.SetStateAction<boolean>>; }) => {
-  const { layer, inverted, cubeContainer, setIsAnimating } = props;
+const rotateLayer = (props: { layer: Layer; inverted: boolean; cubeContainer: THREE.Group<THREE.Object3DEventMap> | null; isAnimatingRef: React.MutableRefObject<boolean>; }) => {
+  const { layer, inverted, cubeContainer, isAnimatingRef } = props;
   const axis = getAxis(layer);
   const layerPos = getLayerPos(layer);
   if (cubeContainer) {
@@ -59,7 +59,7 @@ const rotateLayer = (props: { layer: Layer; inverted: boolean; cubeContainer: TH
     let angleTarget = Math.PI / 2;
     let angleDirection = getAngleDirection(layer, inverted);
     const animate = () => {
-      setIsAnimating(true);
+      isAnimatingRef.current = true;
       angle += (0.2 * angleDirection);
       group.rotation[axis] = angle;
       if (Math.abs(angle) < angleTarget) {
@@ -75,7 +75,7 @@ const rotateLayer = (props: { layer: Layer; inverted: boolean; cubeContainer: TH
           cubeContainer.add(clone);
         });
         cubeContainer.remove(group);
-        setIsAnimating(false);
+        isAnimatingRef.current = false;
       }
     };
     animate();

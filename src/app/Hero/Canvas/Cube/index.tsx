@@ -10,8 +10,7 @@ import useKeyPress from '@/hooks/useKeyPress';
 
 const Cube = () => {
   const ref = useRef<THREE.Group>(null);
-  const queue = useRef<string[]>([]);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const isAnimating = useRef(false);
 
   // Create the 3x3x3 cube
   useEffect(() => {
@@ -22,11 +21,11 @@ const Cube = () => {
         for (let z = -1; z <= 1; z++) {
           if (x === 0 && y === 0 && z === 0) continue;
           const cubie = new THREE.Group();
-          cubie.scale.set(0.98, 0.98, 0.98);
           cubie.position.set(x, y, z);
           const base = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x000000 }));
           cubie.add(base);
           addStickers(cubie, x, y, z);
+          cubie.scale.set(0.98, 0.98, 0.98);
           container?.add(cubie);
         }
       }
@@ -42,9 +41,9 @@ const Cube = () => {
   useEffect(() => {
     const container = ref.current;
     const key = keyPressed as Layer;
-    if (!keyPressed || isAnimating) return; // TODO: improve animation system
+    if (key === null || isAnimating.current === true) return;
     if (LAYERS.includes(key)) {
-      rotateLayer({ layer: key, inverted: false, cubeContainer: container, setIsAnimating });
+      rotateLayer({ layer: key, inverted: false, cubeContainer: container, isAnimatingRef: isAnimating });
     }
   }, [keyPressed]);
 
