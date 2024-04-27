@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Layer } from './types';
+import { Layer, Move } from './types';
 import getBreakPosition from './getBreakPosition';
 
 const getAxis = (layer: Layer) => {
@@ -46,9 +46,14 @@ const getAngleDirection = (layer: Layer, inverted: boolean) => {
   }
 }
 
-const rotateLayer = (props: { layer: Layer; inverted: boolean; cubeContainer: THREE.Group | null; }) => {
-  const { layer, inverted, cubeContainer } = props;
+const getInverted = (move: Move) => {
+  return move === move.toUpperCase();
+}
 
+const rotateLayer = (props: { move: Move; cubeContainer: THREE.Group | null; }) => {
+  const { move, cubeContainer } = props;
+  const inverted = getInverted(move);
+  const layer = move.toLowerCase() as Layer;
   const axis = getAxis(layer);
   const layerPos = getLayerPos(layer);
 

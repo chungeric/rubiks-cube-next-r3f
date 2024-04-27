@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, OrbitControls, RoundedBox } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import addStickers from './helpers/addStickers';
 import rotateLayer from './helpers/rotateLayer';
-import { LAYERS } from './helpers/consts';
+import { MOVES } from './helpers/consts';
 import { Layer } from './helpers/types';
 import useKeyPress from '@/hooks/useKeyPress';
 import getBreakPosition from './helpers/getBreakPosition';
 import { lerp } from 'three/src/math/MathUtils.js';
 
-const Cube = ({ breakCube }: { breakCube: boolean; }) => {
+const Cube = ({ breakCube }: { breakCube: boolean }) => {
   const ref = useRef<THREE.Group>(null);
   const isAnimating = useRef(false);
   const raycaster = useRef(new THREE.Raycaster());
@@ -49,8 +48,8 @@ const Cube = ({ breakCube }: { breakCube: boolean; }) => {
     const container = ref.current;
     const key = keyPressed as Layer;
     if (key === null || isAnimating.current === true) return;
-    if (LAYERS.includes(key)) {
-      rotateLayer({ layer: key, inverted: false, cubeContainer: container });
+    if (MOVES.includes(key)) {
+      rotateLayer({ move: key, cubeContainer: container });
     }
   }, [keyPressed]);
 
@@ -73,14 +72,18 @@ const Cube = ({ breakCube }: { breakCube: boolean; }) => {
   useFrame(() => {
     const container = ref.current;
     if (!container) return;
-    const isAnimating = container.children.find(child => child.userData.name !== 'cubie');
+    const isAnimating = container.children.find((child) => child.userData.name !== 'cubie');
     if (isAnimating) return;
     const cubies = container.children.filter((cubie) => cubie.userData.name === 'cubie');
-    if (cubies.every((cubie) => {
-      return cubie.position.x === cubie.userData.solvedPosition.x &&
-        cubie.position.y === cubie.userData.solvedPosition.y &&
-        cubie.position.z === cubie.userData.solvedPosition.z;
-    })) {
+    if (
+      cubies.every((cubie) => {
+        return (
+          cubie.position.x === cubie.userData.solvedPosition.x &&
+          cubie.position.y === cubie.userData.solvedPosition.y &&
+          cubie.position.z === cubie.userData.solvedPosition.z
+        );
+      })
+    ) {
       console.log('Solved!');
     }
   });
@@ -103,9 +106,12 @@ const Cube = ({ breakCube }: { breakCube: boolean; }) => {
       cubie.position.x = lerp(cubie.position.x, cubie.userData[targetUserDataPosition].x, lerpAmount);
       cubie.position.y = lerp(cubie.position.y, cubie.userData[targetUserDataPosition].y, lerpAmount);
       cubie.position.z = lerp(cubie.position.z, cubie.userData[targetUserDataPosition].z, lerpAmount);
-      if (Math.abs(cubie.position.x - cubie.userData[targetUserDataPosition].x) < 0.001) cubie.position.x = cubie.userData[targetUserDataPosition].x;
-      if (Math.abs(cubie.position.y - cubie.userData[targetUserDataPosition].y) < 0.001) cubie.position.y = cubie.userData[targetUserDataPosition].y;
-      if (Math.abs(cubie.position.z - cubie.userData[targetUserDataPosition].z) < 0.001) cubie.position.z = cubie.userData[targetUserDataPosition].z;
+      if (Math.abs(cubie.position.x - cubie.userData[targetUserDataPosition].x) < 0.001)
+        cubie.position.x = cubie.userData[targetUserDataPosition].x;
+      if (Math.abs(cubie.position.y - cubie.userData[targetUserDataPosition].y) < 0.001)
+        cubie.position.y = cubie.userData[targetUserDataPosition].y;
+      if (Math.abs(cubie.position.z - cubie.userData[targetUserDataPosition].z) < 0.001)
+        cubie.position.z = cubie.userData[targetUserDataPosition].z;
     });
   });
 
