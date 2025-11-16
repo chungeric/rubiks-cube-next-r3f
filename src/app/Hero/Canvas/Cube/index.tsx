@@ -9,6 +9,7 @@ import useKeyPress from '@/hooks/useKeyPress';
 import getBreakPosition from './helpers/getBreakPosition';
 import { lerp } from 'three/src/math/MathUtils.js';
 import getMoveFromClick from './helpers/getMoveFromClick';
+import { Billboard, Html, Text } from '@react-three/drei';
 
 const Cube = ({ breakCube }: { breakCube: boolean }) => {
   const ref = useRef<THREE.Group>(null);
@@ -172,7 +173,63 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
     }
   });
 
-  return <group ref={ref} userData={{ name: 'cube' }} onPointerEnter={() => setPointerEntered(true)} />;
+  return (
+    <group ref={ref} userData={{ name: 'cube' }} onPointerEnter={() => setPointerEntered(true)}>
+      <Text
+        position={[0, 1.6, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        fontSize={0.5}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        U
+      </Text>
+      <Text
+        position={[0, -1.6, 0]}
+        rotation={[Math.PI / 2, 0, 0]}
+        fontSize={0.5}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        D
+      </Text>
+      <Text
+        position={[-1.6, 0, 0]}
+        rotation={[0, -Math.PI / 2, 0]}
+        fontSize={0.5}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        L
+      </Text>
+      <Text
+        position={[1.6, 0, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        fontSize={0.5}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        R
+      </Text>
+      <Text position={[0, 0, 1.6]} rotation={[0, 0, 0]} fontSize={0.5} color="black" anchorX="center" anchorY="middle">
+        F
+      </Text>
+      <Text
+        position={[0, 0, -1.6]}
+        rotation={[0, Math.PI, 0]}
+        fontSize={0.5}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        B
+      </Text>
+    </group>
+  );
 };
 
 export default Cube;
