@@ -175,59 +175,27 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
 
   return (
     <group ref={ref} userData={{ name: 'cube' }} onPointerEnter={() => setPointerEntered(true)}>
-      <Text
-        position={[0, 1.6, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
+      <Html transform occlude position={[0, 1.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         U
-      </Text>
-      <Text
-        position={[0, -1.6, 0]}
-        rotation={[Math.PI / 2, 0, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
+      </Html>
+      <Html transform occlude position={[0, -1.6, 0]} rotation={[Math.PI / 2, 0, 0]}>
         D
-      </Text>
-      <Text
-        position={[-1.6, 0, 0]}
-        rotation={[0, -Math.PI / 2, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
+      </Html>
+      <Html transform occlude position={[-1.6, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
         L
-      </Text>
-      <Text
-        position={[1.6, 0, 0]}
-        rotation={[0, Math.PI / 2, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
+      </Html>
+      <Html transform occlude position={[1.6, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
         R
-      </Text>
-      <Text position={[0, 0, 1.6]} rotation={[0, 0, 0]} fontSize={0.5} color="black" anchorX="center" anchorY="middle">
+      </Html>
+      <Html transform occlude position={[0, 0, 1.6]} rotation={[0, 0, 0]}>
         F
-      </Text>
-      <Text
-        position={[0, 0, -1.6]}
-        rotation={[0, Math.PI, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
+      </Html>
+      <Html transform occlude position={[1.6, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        R
+      </Html>
+      <Html transform occlude position={[0, 0, -1.6]} rotation={[0, Math.PI, 0]}>
         B
-      </Text>
+      </Html>
     </group>
   );
 };

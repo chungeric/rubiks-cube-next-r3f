@@ -69,28 +69,47 @@ const rotateLayer = (props: { move: Move; cubeContainer: THREE.Group | null; rot
     cubies.forEach((cubie) => group.add(cubie));
     cubeContainer.add(group);
 
+    // Create rotation axis vector in cubeContainer's local space
+    const rotationAxis = new THREE.Vector3();
+    rotationAxis[axis] = 1;
+
     // Animate rotation of group and place pieces back in place in container
     let angle = 0;
     let angleTarget = Math.PI / 2;
     let angleDirection = getAngleDirection(layer, inverted);
     const animate = () => {
       angle += (rotationSpeed * angleDirection);
-      group.rotation[axis] = angle;
+      
+      // Apply rotation around the local axis
+      group.quaternion.setFromAxisAngle(rotationAxis, angle);
+      
       if (Math.abs(angle) < angleTarget) {
         requestAnimationFrame(animate);
       } else {
-        group.rotation[axis] = angleTarget * angleDirection;
+        // Set final rotation
+        group.quaternion.setFromAxisAngle(rotationAxis, angleTarget * angleDirection);
+        
         group.children.forEach((cubie) => {
           const clone = cubie.clone();
-          const position = cubie.getWorldPosition(new THREE.Vector3());
-          const rotation = cubie.getWorldQuaternion(new THREE.Quaternion());
-          const newX = Math.round(position.x);
-          const newY = Math.round(position.y);
-          const newZ = Math.round(position.z);
+          
+          // Get position and rotation in cubeContainer's local space
+          const localPosition = new THREE.Vector3();
+          const localQuaternion = new THREE.Quaternion();
+          
+          group.localToWorld(localPosition.copy(cubie.position));
+          cubeContainer.worldToLocal(localPosition);
+          
+          // Combine rotations: group's rotation * cubie's rotation
+          localQuaternion.multiplyQuaternions(group.quaternion, cubie.quaternion);
+          
+          const newX = Math.round(localPosition.x);
+          const newY = Math.round(localPosition.y);
+          const newZ = Math.round(localPosition.z);
+          
           clone.position.set(newX, newY, newZ);
           clone.userData.currentPosition = { x: newX, y: newY, z: newZ };
           clone.userData.breakPosition = getBreakPosition(newX, newY, newZ);
-          clone.rotation.setFromQuaternion(rotation);
+          clone.rotation.setFromQuaternion(localQuaternion);
           cubeContainer.add(clone);
         });
         cubeContainer.remove(group);
