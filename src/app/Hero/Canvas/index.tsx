@@ -5,7 +5,7 @@ import Cube from './Cube';
 
 const Canvas = ({ breakCube }: { breakCube: boolean }) => {
   return (
-    <R3FCanvas camera={{ fov: 20, position: [20, 20, 20] }}>
+    <R3FCanvas camera={{ fov: 20, position: [20, 10, 20] }}>
       <Float>
         <Cube breakCube={breakCube} />
       </Float>
@@ -18,7 +18,7 @@ const Canvas = ({ breakCube }: { breakCube: boolean }) => {
         resolution={256}
         color="#000000"
       />
-      <OrbitControls enableDamping={true} dampingFactor={0.08} enablePan={false} minDistance={32} maxDistance={35} />
+      <OrbitControls enableDamping={true} dampingFactor={0.08} enablePan={false} minDistance={30} maxDistance={33} />
     </R3FCanvas>
   );
 };

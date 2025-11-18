@@ -9,7 +9,7 @@ import useKeyPress from '@/hooks/useKeyPress';
 import getBreakPosition from './helpers/getBreakPosition';
 import { lerp } from 'three/src/math/MathUtils.js';
 import getMoveFromClick from './helpers/getMoveFromClick';
-import { Billboard, Html, Text } from '@react-three/drei';
+import { Html } from '@react-three/drei';
 
 const Cube = ({ breakCube }: { breakCube: boolean }) => {
   const ref = useRef<THREE.Group>(null);
@@ -176,25 +176,25 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
   return (
     <group ref={ref} userData={{ name: 'cube' }} onPointerEnter={() => setPointerEntered(true)}>
       <Html transform occlude position={[0, 1.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        U
+        <span style={{ opacity: 0.3 }}>U</span>
       </Html>
       <Html transform occlude position={[0, -1.6, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        D
+        <span style={{ opacity: 0.3 }}>D</span>
       </Html>
       <Html transform occlude position={[-1.6, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        L
+        <span style={{ opacity: 0.3 }}>L</span>
       </Html>
       <Html transform occlude position={[1.6, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        R
+        <span style={{ opacity: 0.3 }}>R</span>
       </Html>
       <Html transform occlude position={[0, 0, 1.6]} rotation={[0, 0, 0]}>
-        F
+        <span style={{ opacity: 0.3 }}>F</span>
       </Html>
       <Html transform occlude position={[1.6, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        R
+        <span style={{ opacity: 0.3 }}>R</span>
       </Html>
       <Html transform occlude position={[0, 0, -1.6]} rotation={[0, Math.PI, 0]}>
-        B
+        <span style={{ opacity: 0.3 }}>B</span>
       </Html>
     </group>
   );

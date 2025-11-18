@@ -2,24 +2,36 @@
   position: relative;
   height: 100vh;
 
-  .button {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-  }
-
   .ui {
     max-width: 400px;
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 24px;
+    top: 1.4rem;
+    left: 1.4rem;
     padding: 1.4rem;
     color: #111;
     background: rgba(0, 0, 0, 0.1);
     font-size: 1rem;
 
     span {
+      font-weight: 700;
+    }
+
+    > div {
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      margin-bottom: 1rem;
+    }
+
+    .button {
+      appearance: none;
+      border: none;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      padding: 0.6rem 0.8rem;
+      background: blue;
+      color: white;
       font-weight: 700;
     }
   }
