@@ -60,6 +60,14 @@ const rotateLayer = (props: { move: Move; cubeContainer: THREE.Group | null; rot
   if (cubeContainer) {
     const cubies = cubeContainer.children.filter((child) => child.userData.name === 'cubie' && child.position[axis] === layerPos);
 
+    const isBreakAnimating = cubies.some((cubie) => 
+      Math.abs(cubie.position.x - cubie.userData.idlePosition.x) > 0.01 ||
+      Math.abs(cubie.position.y - cubie.userData.idlePosition.y) > 0.01 ||
+      Math.abs(cubie.position.z - cubie.userData.idlePosition.z) > 0.01
+    );
+    
+    if (isBreakAnimating) return;
+
     // Wait until all cubies are set in place to rotate a layer
     if ((layer !== 'm' && cubies.length !== 9) || (layer === 'm' && cubies.length !== 8)) return;
 
@@ -107,7 +115,7 @@ const rotateLayer = (props: { move: Move; cubeContainer: THREE.Group | null; rot
           const newZ = Math.round(localPosition.z);
           
           clone.position.set(newX, newY, newZ);
-          clone.userData.currentPosition = { x: newX, y: newY, z: newZ };
+          clone.userData.idlePosition = { x: newX, y: newY, z: newZ };
           clone.userData.breakPosition = getBreakPosition(newX, newY, newZ);
           clone.rotation.setFromQuaternion(localQuaternion);
           cubeContainer.add(clone);

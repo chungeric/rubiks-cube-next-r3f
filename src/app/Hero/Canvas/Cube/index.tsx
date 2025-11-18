@@ -35,7 +35,7 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
           cubie.scale.set(0.98, 0.98, 0.98);
           cubie.userData.name = `cubie`;
           cubie.userData.solvedPosition = { x, y, z };
-          cubie.userData.currentPosition = { x, y, z };
+          cubie.userData.idlePosition = { x, y, z };
           cubie.userData.breakPosition = getBreakPosition(x, y, z);
           container?.add(cubie);
         }
@@ -142,7 +142,7 @@ const Cube = ({ breakCube }: { breakCube: boolean }) => {
     const container = ref.current;
     if (!container) return;
     const cubies = container.children.filter((cubie) => cubie.userData.name === 'cubie');
-    const targetUserDataPosition = breakCube ? 'breakPosition' : 'currentPosition';
+    const targetUserDataPosition = breakCube ? 'breakPosition' : 'idlePosition';
     const lerpAmount = breakCube ? 0.25 : 0.15;
     cubies?.forEach((cubie, i) => {
       if (
